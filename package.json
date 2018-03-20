@@ -1,21 +1,44 @@
 {
-  "name": "func",
+  "name": "@yakika/func",
   "version": "1.0.0",
   "description": "Error handling without try/catch",
-  "main": "index.js",
-  "repository": "https://github.com/Yakika/func",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src"
+  },
+  "keywords": [
+    "error",
+    "trycatch"
+  ],
+  "bugs": {
+    "url": "https://github.com/Yakika/func/issues"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Yakika/func.git"
+  },
   "author": "Yvan da Silva",
   "license": "MIT",
   "private": false,
   "scripts": {
     "lint": "eslint src/. test/. --config eslintrc.json",
-    "test": "yarn run lint && yarn run jest"
+    "lint-fix": "yarn run lint --fix",
+    "test": "yarn run lint && yarn run jest",
+    "coverage": "yarn run jest --coverage"
   },
   "devDependencies": {
     "eslint": "^4.19.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.0",
     "jest": "^22.4.2",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.11.1"
-  }
+  },
+  "pre-commit": [
+    "lint-fix",
+    "test"
+  ]
 }
