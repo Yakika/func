@@ -1,8 +1,12 @@
 sudo: false
 language: node_js
+cache:
+  yarn: true
+  directories:
+    - node_modules
 node_js:
   - node
-  - '6'
+  - '7'
 after_script:
   - 'yarn run coverage'
 notifications:
