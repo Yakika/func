@@ -93,9 +93,10 @@ describe('Asynchronous transform error to something readable', () => {
     const msg = 'human readable err'
     let errMsg, originalErr
     prom()
-      .catch(trErr(msg))
+      // Normally we would use .catch(trErr(msg)),
+      .catch(e=>{originalErr = e;trErr(msg)(e)} )
       .catch(e => {
-        expect(errMsg).toEqual(
+        expect(e.message).toEqual(
           `error: ${msg}\n- original error: ${originalErr}`
         )
       })
@@ -108,13 +109,14 @@ describe('Synchronous transform error to something readable', () => {
     // External try/catch for testing behavior
     try {
       try {
+        throw new Error()
       } catch (e) {
-        // translate some sync error that we don't want to catch
+        // transform some sync error that we don't want to catch
         originalErr = e
         trErr(msg)(e)
       }
     } catch (err) {
-      expect(err).toEqual(
+      expect(err.message).toEqual(
         `error: ${msg}\n- original error: ${originalErr}`
       )
     }
