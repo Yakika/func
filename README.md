@@ -60,3 +60,13 @@ async function myFunction() {
   prom().catch(trErr('That promised failed :('))
 }
 ```
+
+## Requirements
+
+For testing:
+
+- NodeJS >= 8.0.0
+
+For using:
+
+- NodeJS >= 6.0.0

@@ -53,3 +53,6 @@ const trErr = msg => {
 }
 
 module.exports = { func, trErr }
+
+// For better ES module compatibility
+module.exports.default = func
