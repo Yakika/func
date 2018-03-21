@@ -1,56 +1,55 @@
 /**
  * Check if the promise is of Promise type
  * @param {*} promise
- * @return {boolean}
+ * @returns {boolean} true if is a promise
  */
 const _isPromise = promise => {
   return promise && typeof promise.then === 'function'
 }
 
 /**
- * Checks if obj is a function, curtosy of underscorejs.
- * @param {*} obj
- * @return {boolean}
+ * Transforms the error
+ * @param {object} err
+ * @param {string} msg
+ * @returns a new Error with message `error: ${msg}\n- original error: ${err}`
  */
-const _isFunction = obj => {
-  return !!(obj && obj.constructor && obj.call && obj.apply)
+const _transformErrorMsg = (err, msg) => {
+  return new Error(`error: ${msg}\n- original error: ${err}`)
 }
 
 /**
  * Returns the [res, err] of an async function
  * Normal data and sync functions are allowed to be passed through
- * @param {*} promise
+ * @param {Promise|*} promise
+ * @param {string} [msg]
  * @returns {Promise} Promise object represents [res, err]
  */
-const func = promise => {
-  if (_isFunction(promise)) {
-    try {
-      return func(promise())
-    } catch (err) {
-      return [undefined, err]
-    }
-  }
+const func = (promise, msg) => {
+  // we allow data to be passed through
   if (!_isPromise(promise)) {
     return [promise, undefined]
   }
-
-  return promise.then(res => [res, undefined]).catch(err => [undefined, err])
+  return promise.then(res => [res, undefined]).catch(err => {
+    err = msg === undefined ? err : _transformErrorMsg(err, msg)
+    return [undefined, err]
+  })
 }
 
 /**
  * Transforms an Error with a readable msg.
  * @param {string} msg
- * @return {trErr~inner} an err transform function
+ * @returns {trErr~trfn} an err transform function
  */
 const trErr = msg => {
   /**
-   * Constructs new error
+   * @function trfn
    * @param {object} a standard error
    * @throws {object} a standard error `error:${msg}\n- original error:${err}`
    */
-  return err => {
-    throw new Error(`error: ${msg}\n- original error: ${err}`)
+  const trfn = err => {
+    throw _transformErrorMsg(err, msg)
   }
+  return trfn
 }
 
 module.exports = { func, trErr }

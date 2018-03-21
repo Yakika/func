@@ -7,6 +7,9 @@ const { func, trErr } = require('../src/index')
 const expectedText = 'my-value'
 const rejectedText = 'is-rejected'
 const thrownText = 'is-thrown'
+const format = (originalErr, msg) => {
+  return `error: ${msg}\n- original error: ${originalErr}`
+}
 
 describe('Synchronous error handling', () => {
   it(`res is equal to ${expectedText} and err is undefined`, async () => {
@@ -27,15 +30,6 @@ describe('Synchronous error handling', () => {
     }
     expect(res).toBeUndefined()
     expect(err).toBeUndefined()
-  })
-
-  it(`res is undefined and err.message is equal to ${thrownText}
-    even without a proper function call`, async () => {
-    const [res, err] = await func(() => {
-      throw new Error(thrownText)
-    })
-    expect(res).toBeUndefined()
-    expect(err.message).toEqual(thrownText)
   })
 })
 
@@ -76,6 +70,18 @@ describe('Asynchronous error handling', () => {
     expect(res).toBeUndefined()
     expect(err.message).toEqual(thrownText)
   })
+
+  it(`res is undefined and err.message is transformed`, async () => {
+    // Bypass func to get the original error for testing transform
+    let originalErr
+    const test = await testAwaitReject(expectedText).catch(e => {
+      originalErr = e
+    })
+
+    const [res, err] = await func(testAwaitReject(expectedText), expectedText)
+    expect(res).toBeUndefined()
+    expect(err.message).toEqual(format(originalErr, expectedText))
+  })
 })
 
 /**
@@ -94,11 +100,12 @@ describe('Asynchronous transform error to something readable', () => {
     let errMsg, originalErr
     prom()
       // Normally we would use .catch(trErr(msg)),
-      .catch(e=>{originalErr = e;trErr(msg)(e)} )
       .catch(e => {
-        expect(e.message).toEqual(
-          `error: ${msg}\n- original error: ${originalErr}`
-        )
+        originalErr = e
+        trErr(msg)(e)
+      })
+      .catch(e => {
+        expect(e.message).toEqual(format(originalErr, msg))
       })
   })
 })
