@@ -1,6 +1,6 @@
 {
   "name": "@yakika/func",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Error handling without try/catch",
   "main": "src/index.js",
   "directories": {
