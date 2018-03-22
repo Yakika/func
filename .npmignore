@@ -2,4 +2,7 @@
 .prettierrc
 .travis.yml
 .eslintrc.json
+eslintrc.json
 tests/
+coverage/
+*.log
