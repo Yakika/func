@@ -1,6 +1,6 @@
 {
   "name": "@yakika/func",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Error handling without try/catch",
   "main": "src/index.js",
   "directories": {
@@ -29,7 +29,6 @@
     "test": "yarn run lint && yarn run jest",
     "coverage": "yarn run jest --coverage",
     "coveralls": "yarn run coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
-
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
